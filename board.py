@@ -7,14 +7,9 @@ class Board:
         self.board_size_x = board_size_x
 
     
-    def _create_board(self) -> None:
-        # Create a nested 2D list
+    def create(self) -> None:
+        # Create a nested 2D list:
+        # Amount columns = board_size_x, Amount rows = board_size_y
 
         for _ in range(self.board_size_x):
             self.board.append(self.board_size_y * [0])
-
-
-board_1 = Board()
-board_1._create_board()
-
-print(board_1.board)
