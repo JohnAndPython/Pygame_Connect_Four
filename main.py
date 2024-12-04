@@ -15,13 +15,16 @@ clock = pygame.time.Clock()
 
 prev_time = time.time()
 
-
-
 board_1 = Board()
 centersx = board_1.get_centersx()
+points_pos = board_1.get_points_pos()
+
 
 player_yel = Player("yellow", 50)
 player_red = Player("red", 60)
+
+
+
 
 # Selection bar
 select_bar = dict()
@@ -34,7 +37,7 @@ for index in range(7):
 
 
 
-
+# *************************** Delete ***********************************************
 
 main_board = [[0, 0, 0, 0, 0, 0, 0],
               [0, 0, 0, 0, 0, 0, 0],
@@ -42,6 +45,9 @@ main_board = [[0, 0, 0, 0, 0, 0, 0],
               [0, 0, 1, -1, -1, 0, 0],
               [0, 0, -1, 1, 1, 0, 0],
               [0, -1, 1, 1, 1, 1, 0]]
+
+
+# *************************** Delete ***********************************************
 
 left = 15
 top = 15
@@ -54,34 +60,34 @@ circles = []
 for _ in range(6):
     circles.append(7 * [0])
 
+# *************************** Delete ***********************************************
+# # Coin colors
+# white = (255, 255, 255)
+# yellow = (200, 200, 0)
+# red = (200, 0, 0)
 
-# Coin colors
-white = (255, 255, 255)
-yellow = (200, 200, 0)
-red = (200, 0, 0)
 
+# # Chnage values of list circles based on the values in the nested list main_board
+# for ind_row, row in enumerate(main_board):
+#     for ind_col, value in enumerate(row):
+#         if value == 0:
+#             circles[ind_row][ind_col] = (white, (left, top, *circle_size))
+#         elif value == -1:
+#             circles[ind_row][ind_col] = (red, (left, top, *circle_size))
+#         elif value == 1:
+#             circles[ind_row][ind_col] = (yellow, (left, top, *circle_size))
 
-# Chnage values of list circles based on the values in the nested list main_board
-for ind_row, row in enumerate(main_board):
-    for ind_col, value in enumerate(row):
-        if value == 0:
-            circles[ind_row][ind_col] = (white, (left, top, *circle_size))
-        elif value == -1:
-            circles[ind_row][ind_col] = (red, (left, top, *circle_size))
-        elif value == 1:
-            circles[ind_row][ind_col] = (yellow, (left, top, *circle_size))
+#         left += 90
 
-        left += 90
-
-    top += 90
-    left = 15
+#     top += 90
+#     left = 15
 
 
 while True:
     #delta time |alternative: dt = clock.tick(60) / 1000
     dt = time.time() - prev_time
     prev_time = time.time()
-    
+
     m_pos = pygame.mouse.get_pos()
     pygame.display.set_caption(f"{m_pos}")
 
@@ -101,21 +107,21 @@ while True:
 
     screen.fill((255, 255, 255))
 
-    
+
+    for key, field in select_bar.items():
+        #pygame.draw.rect(screen, (250, 0, 0), field)
+
+        if field.collidepoint(m_pos):
+            pygame.draw.line(screen, (0, 200, 150), *points_pos[key], 10)
+
+
+
     player_red.set_centerx_to(m_pos[0])
     player_red.draw(screen)
     board_1.draw(screen)
 
 
-    for key, field in select_bar.items():
-        pygame.draw.rect(screen, (250, 0, 0), field)
-        
 
-        if field.collidepoint(m_pos):
-            #print(circles[0][key][1][0])
-            posx = circles[0][key][1][0]
-            posy = posx + 80
-            pygame.draw.line(screen, (0, 200, 150), (posx +10 , 140), (posy +10, 140), 10)
 
 
     pygame.display.flip()
