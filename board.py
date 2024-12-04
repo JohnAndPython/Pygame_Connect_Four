@@ -33,6 +33,23 @@ class Board(pygame.sprite.Sprite):
         ''' Return a list with the centerx value of each rect in the first row of self.board_rects'''
 
         return [rect.centerx for rect in self.board_rects[0]]
+    
+
+    def get_points_pos(self, offset_width: int=10, offset_height: int=8) -> list[tuple]:
+        ''' Create a list of points. The points are the topleft and topright coordinates of the rects in self.board_rects'''
+        
+        points = []
+        pointx_1, pointy_1, pointx_2, pointy_2 = 0, 0, 0, 0
+         
+        for rect in self.board_rects[0]:
+            pointx_1 = rect.topleft[0] + offset_width
+            pointy_1 = rect.topleft[1] - offset_height
+            pointx_2 = rect.topright[0] - offset_width
+            pointy_2 = rect.topright[1] - offset_height
+
+            points.append(((pointx_1, pointy_1), (pointx_2, pointy_2)))
+
+        return points
 
 
     def create(self) -> None:
@@ -41,6 +58,8 @@ class Board(pygame.sprite.Sprite):
 
         for _ in range(self.board_size_x):
             self.board.append(self.board_size_y * [0])
+
+
 
 
     def draw(self, surface: pygame.surface.Surface) -> None:
