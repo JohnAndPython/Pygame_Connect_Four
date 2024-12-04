@@ -3,11 +3,12 @@ import time
 import sys
 
 from board import Board
+from player import Player
 
 pygame.init()
 
-SCREEN_WIDTH = 674
-SCREEN_HEIGHT = 730
+SCREEN_WIDTH = 700
+SCREEN_HEIGHT = 720
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
@@ -15,14 +16,25 @@ clock = pygame.time.Clock()
 prev_time = time.time()
 
 
-dot_surf = pygame.surface.Surface((80, 80))
-dot_rect = dot_surf.get_rect()
-dot_rect.top = 50
 
-b_surf = pygame.surface.Surface((650, 560))
-b_rect = b_surf.get_rect()
-b_rect.left = 12
-b_rect.top = 150
+board_1 = Board()
+centersx = board_1.get_centersx()
+
+player_yel = Player("yellow", 50)
+player_red = Player("red", 60)
+
+# Selection bar
+select_bar = dict()
+select_left = 0
+for index in range(7):
+    select_bar[index] = pygame.rect.Rect(0, 0, 20, 120)
+    select_bar[index].centerx = centersx[index]
+
+
+
+
+
+
 
 main_board = [[0, 0, 0, 0, 0, 0, 0],
               [0, 0, 0, 0, 0, 0, 0],
@@ -35,39 +47,34 @@ left = 15
 top = 15
 circle_size = (80, 80)
 
+# Nested List for coins
+# [color, circle_size]
 circles = []
 
 for _ in range(6):
     circles.append(7 * [0])
 
 
-
+# Coin colors
 white = (255, 255, 255)
 yellow = (200, 200, 0)
 red = (200, 0, 0)
 
 
+# Chnage values of list circles based on the values in the nested list main_board
 for ind_row, row in enumerate(main_board):
     for ind_col, value in enumerate(row):
         if value == 0:
-            circles[ind_row][ind_col] = (b_surf, white, (left, top, *circle_size))
+            circles[ind_row][ind_col] = (white, (left, top, *circle_size))
         elif value == -1:
-            circles[ind_row][ind_col] = (b_surf, red, (left, top, *circle_size))
+            circles[ind_row][ind_col] = (red, (left, top, *circle_size))
         elif value == 1:
-            circles[ind_row][ind_col] = (b_surf, yellow, (left, top, *circle_size))
+            circles[ind_row][ind_col] = (yellow, (left, top, *circle_size))
 
         left += 90
 
     top += 90
     left = 15
-
-
-print(circles)
-
-
-# for _ in range(7):
-#     circles.append((b_surf, (255, 255, 255), (left, 10, 100, 100)))
-#     left += 140
 
 
 while True:
@@ -89,32 +96,28 @@ while True:
                 pygame.quit()
                 sys.exit()
 
+
+
+
     screen.fill((255, 255, 255))
-    b_surf.fill((0, 0, 230))
-    
-
-    for row in circles:
-        for value in row:
-            pygame.draw.ellipse(*value)
-
-    screen.blit(b_surf, b_rect)
-
-    dot_rect.centerx = m_pos[0]
-    pygame.draw.ellipse(screen, (0, 0, 0), dot_rect)
 
     
+    player_red.set_centerx_to(m_pos[0])
+    player_red.draw(screen)
+    board_1.draw(screen)
 
 
-    # for circle in circles:
-    #     pygame.draw.ellipse(*circle)
-
+    for key, field in select_bar.items():
+        pygame.draw.rect(screen, (250, 0, 0), field)
         
 
-    
+        if field.collidepoint(m_pos):
+            #print(circles[0][key][1][0])
+            posx = circles[0][key][1][0]
+            posy = posx + 80
+            pygame.draw.line(screen, (0, 200, 150), (posx +10 , 140), (posy +10, 140), 10)
 
 
-    #update display
-    #pygame.display.update()
     pygame.display.flip()
 
     #set max FPS to 60
