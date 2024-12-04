@@ -18,6 +18,14 @@ prev_time = time.time()
 board_1 = Board()
 centersx = board_1.get_centersx()
 points_pos = board_1.get_points_pos()
+board_1.board[0][0] = 1
+board_1.board[0][1] = 1
+board_1.board[0][2] = 1
+board_1.board[0][3] = 1
+board_1.board[0][4] = 0
+board_1.board[0][5] = 1
+board_1.board[0][6] = 1
+print(board_1.board)
 
 
 player_yel = Player("yellow", 50)
@@ -30,10 +38,15 @@ player_red = Player("red", 60)
 select_bar = dict()
 select_left = 0
 for index in range(7):
-    select_bar[index] = pygame.rect.Rect(0, 0, 20, 120)
+    select_bar[index] = pygame.rect.Rect(0, 0, 40, SCREEN_HEIGHT)
     select_bar[index].centerx = centersx[index]
 
 
+green = (0, 200, 150)
+red = (200, 0, 0)
+col = (0, 0, 0)
+collision = False
+index_bar = 0
 
 
 
@@ -81,7 +94,7 @@ for _ in range(6):
 
 #     top += 90
 #     left = 15
-
+player_clicked = False
 
 while True:
     #delta time |alternative: dt = clock.tick(60) / 1000
@@ -102,21 +115,42 @@ while True:
                 pygame.quit()
                 sys.exit()
 
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            for index, field in select_bar.items():
+                if field.collidepoint(m_pos) and not board_1.col_full(index):
+                    player_clicked = True
+                    index_bar = index
+
+            
+        elif event.type == pygame.MOUSEBUTTONUP:
+            player_clicked = False
+            # a = board_1.check_column(index_bar)
+            # print(a)
+
 
 
 
     screen.fill((255, 255, 255))
 
 
-    for key, field in select_bar.items():
-        #pygame.draw.rect(screen, (250, 0, 0), field)
-
-        if field.collidepoint(m_pos):
-            pygame.draw.line(screen, (0, 200, 150), *points_pos[key], 10)
 
 
 
-    player_red.set_centerx_to(m_pos[0])
+    if player_clicked:
+        player_red.animation_fall(centersx[index_bar])
+    else:
+        player_red.set_centerx_to(m_pos[0])
+        for key, field in select_bar.items():
+            if field.collidepoint(m_pos) and not board_1.col_full(key):
+                 pygame.draw.line(screen, green, *points_pos[key], 10)
+                
+            elif field.collidepoint(m_pos) and board_1.col_full(key):
+                pygame.draw.line(screen, red, *points_pos[key], 10)
+
+           
+
+    #print(collision, index_bar)
+    
     player_red.draw(screen)
     board_1.draw(screen)
 

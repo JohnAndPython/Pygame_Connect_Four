@@ -6,11 +6,15 @@ class Board(pygame.sprite.Sprite):
         super().__init__()
 
         self.board: list = []
-        self.board_rects: list = []
         self.board_size_y: int = board_size_y
         self.board_size_x : int= board_size_x
 
-        self.image: pygame.surface.Surface = pygame.image.load(r"Assets\board.png")
+        for _ in range(self.board_size_x):
+            self.board.append(self.board_size_y * [0])
+
+        self.board_rects: list = []
+
+        self.image: pygame.surface.Surface = pygame.image.load(r"Assets\board.png").convert_alpha()
         self.rect: pygame.rect.Rect = self.image.get_rect()
 
         # Fill nested 2D List with Pygame rectangles
@@ -52,14 +56,20 @@ class Board(pygame.sprite.Sprite):
         return points
 
 
-    def create(self) -> None:
-        ''' Create a nested 2D list:
-        Amount columns = board_size_x, Amount rows = board_size_y '''
+    def col_full(self, index) -> bool:
+        ''' Check if a column is full or not. Full = Column is completly filled with values other than zeros'''
 
-        for _ in range(self.board_size_x):
-            self.board.append(self.board_size_y * [0])
+        for value in self.board:
+            if value[index] != 0:
+                return True
+            else:
+                return False
+            
+        return False
 
 
+    def free_space(self, index) -> int:
+        pass
 
 
     def draw(self, surface: pygame.surface.Surface) -> None:
