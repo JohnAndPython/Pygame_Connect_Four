@@ -22,6 +22,7 @@ class Player(pygame.sprite.Sprite):
         
         self._coins: list = []
 
+        
 
     def set_centerx_to(self, pos_x: int) -> None:
         self._rect.centerx = pos_x
@@ -42,6 +43,13 @@ class Player(pygame.sprite.Sprite):
     def get_coin_height(self) -> int:
         return self._rect.height
 
+
+    def get_image(self) -> pygame.surface.Surface:
+        return self._image
+
+
+    def reset_pos(self) -> None:
+        self._rect.top = 0
 
     def draw(self, surface: pygame.surface.Surface) -> None:
         surface.blit(self._image, self._rect)
