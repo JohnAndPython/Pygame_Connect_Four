@@ -35,7 +35,15 @@ class Board(pygame.sprite.Sprite):
 
         self._low_border: list = [lowest_border] * board_size_x
 
+        # Player variables
+        self._ply_image_1: pygame.surface.Surface = None
+        self._ply_image_2: pygame.surface.Surface = None
 
+    def config(self, ply_image_1: pygame.surface.Surface, ply_image_2: pygame.surface.Surface) -> None:
+        self._ply_image_1 = ply_image_1
+        self._ply_image_2 = ply_image_2
+
+    
 
     def get_centersx(self) -> list[int]:
         ''' Return a list with the centerx value of each rect in the first row of self.board_rects'''
@@ -60,7 +68,7 @@ class Board(pygame.sprite.Sprite):
         return points
 
 
-    def col_full(self, index) -> bool:
+    def col_full(self, index: int) -> bool:
         ''' Check if a column is full or not. Full = Column is completly filled with values other than zeros'''
 
         if self._board[0][index] != 0:
@@ -77,7 +85,7 @@ class Board(pygame.sprite.Sprite):
         return self._low_border[index]
     
 
-    def set_value(self, index, value) -> None:
+    def set_value(self, index: int, value: int) -> None:
 
         for ind, row in enumerate(self._board):
             if row[index] == 0 and ind == self._board_size_y - 1:
@@ -86,9 +94,17 @@ class Board(pygame.sprite.Sprite):
                 self._board[ind-1][index] = value
 
 
-
     def draw(self, surface: pygame.surface.Surface) -> None:
         ''' Draw the rectangles of the nested list self.board_rects on surface'''
         for row in self._board_rects:
             for rect in row:
                 surface.blit(self._image, rect)
+
+
+    def draw_coins(self, surface: pygame.surface.Surface) -> None:
+        for ind_row, row in enumerate(self._board):
+            for ind_col, value in enumerate(row):
+                if value == 1:
+                    surface.blit(self._ply_image_1, self._board_rects[ind_row][ind_col])
+                elif value == -1:
+                    surface.blit(self._ply_image_2, self._board_rects[ind_row][ind_col])
