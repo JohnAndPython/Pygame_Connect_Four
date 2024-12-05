@@ -26,7 +26,7 @@ board_1.config(player_red.get_image(), player_yel.get_image())
 cur_player = random.choice([player_red, player_yel])
 
 # Text Game Over
-game_font = pygame.font.Font(None, 100)
+game_font = pygame.font.Font(None, 80)
 game_over_surface = game_font.render("Game Over", True, (0, 0, 0))
 game_over_rect = game_over_surface.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
 
@@ -36,6 +36,14 @@ red_rect = red_surf.get_rect(bottom=game_over_rect.top, centerx=game_over_rect.c
 
 yel_surf = game_font.render("Yellow Wins!!", True, (0, 0, 0))
 yel_rect = yel_surf.get_rect(bottom=game_over_rect.top, centerx=game_over_rect.centerx)
+
+# Text restart
+restart_surf = game_font.render("Right Click to Restart", True, (0, 0, 0))
+restart_rect = restart_surf.get_rect(top=game_over_rect.bottom, centerx=game_over_rect.centerx)
+
+# Rect Game Over
+bg_rect = pygame.rect.Rect(0, 0, restart_rect.width + 10, 260)
+bg_rect.center = game_over_rect.center
 
 
 # Selection bar
@@ -64,6 +72,7 @@ while True:
 
     m_pos = pygame.mouse.get_pos()
     pygame.display.set_caption("Connect Four")
+    pygame.display.set_caption(f"{clock.get_fps():.2f}")
 
     # Event loop
     for event in pygame.event.get():
@@ -76,12 +85,20 @@ while True:
                 pygame.quit()
                 sys.exit()
 
-        elif not game_over and not cannot_click and event.type == pygame.MOUSEBUTTONDOWN:
+        elif not game_over and not cannot_click and event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
             for index, field in select_bar.items():
                 if field.collidepoint(m_pos) and not board_1.col_full(index):
 
                     player_clicked = True
                     index_column = index
+
+        elif game_over and event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[2]:
+                board_1.reset()
+                player_clicked = False
+                cannot_click = False
+                game_over = False
+                red_won = False
+                yel_won = False
 
 
     screen.fill((255, 255, 255))
@@ -138,12 +155,15 @@ while True:
     
     # Draw Game Over and who won
     if game_over:
+        pygame.draw.rect(screen, (255, 255, 255), bg_rect, border_radius=15)
         screen.blit(game_over_surface, game_over_rect)
         
         if red_won:
             screen.blit(red_surf, red_rect)
         elif yel_won:
             screen.blit(yel_surf, yel_rect)
+
+        screen.blit(restart_surf, restart_rect)
 
     # Update screen
     pygame.display.flip()
