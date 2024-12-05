@@ -45,7 +45,6 @@ class Board(pygame.sprite.Sprite):
         self._ply_image_2 = ply_image_2
 
     
-
     def get_centersx(self) -> list[int]:
         ''' Return a list with the centerx value of each rect in the first row of self.board_rects'''
 
@@ -164,6 +163,7 @@ class Board(pygame.sprite.Sprite):
                 lst_diagonalRL.clear()
 
         return 0
+
 
     def draw(self, surface: pygame.surface.Surface) -> None:
         ''' Draw the rectangles of the nested list self.board_rects on surface'''
