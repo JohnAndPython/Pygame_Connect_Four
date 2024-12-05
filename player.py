@@ -7,8 +7,7 @@ class Player(pygame.sprite.Sprite):
         self._color: str = color
         self._image: pygame.surface.Surface = None
 
-        self._turn: bool = False
-        self.value: int = 0
+        self.value: int = 0 # 1 for red -1 for yellow
 
         if color == "red":
             self._image: pygame.surface.Surface = pygame.image.load(r"Assets\coin_red.png").convert_alpha()
@@ -19,8 +18,6 @@ class Player(pygame.sprite.Sprite):
 
         self._rect: pygame.rect.Rect = self._image.get_rect()
         self._rect.centery: int = center_init_pos
-        
-        self._coins: list = []
 
         # Falling variables
         self._vert_speed: int = 0
