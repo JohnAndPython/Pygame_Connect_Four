@@ -23,18 +23,19 @@ class Player(pygame.sprite.Sprite):
         self._coins: list = []
 
         # Falling variables
-        self._vert_speed = 0
+        self._vert_speed: int = 0
         
 
     def set_centerx_to(self, pos_x: int) -> None:
         self._rect.centerx = pos_x
 
 
-    def animation_fall(self, centerx) -> None:
+    def animation_fall(self, centerx: int) -> None:
         self._rect.centerx = centerx
 
         self._rect.centery += self._vert_speed
         self._vert_speed += 1
+
 
     def set_coin_bottom(self, value: int) -> int:
         self._rect.bottom = value
@@ -55,6 +56,7 @@ class Player(pygame.sprite.Sprite):
     def reset_pos(self) -> None:
         self._rect.top = 0
         self._vert_speed = 0
+
 
     def draw(self, surface: pygame.surface.Surface) -> None:
         surface.blit(self._image, self._rect)
