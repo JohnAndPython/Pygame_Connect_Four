@@ -14,19 +14,18 @@ clock = pygame.time.Clock()
 
 prev_time = time.time()
 
+# Init Board and player
 board_1 = Board(lowest_border=SCREEN_HEIGHT)
 centersx = board_1.get_centersx()
 points_pos = board_1.get_points_pos()
 
-player_yel = Player("yellow", 50)
 player_red = Player("red", 60)
+player_yel = Player("yellow", 60)
 
 board_1.config(player_red.get_image(), player_yel.get_image())
 
-print(player_red._rect)
-
-
-
+# Choose the starting player randomly
+cur_player = random.choice([player_red, player_yel])
 
 # Selection bar
 select_bar = dict()
@@ -35,68 +34,23 @@ for index in range(7):
     select_bar[index] = pygame.rect.Rect(0, 0, 40, SCREEN_HEIGHT)
     select_bar[index].centerx = centersx[index]
 
-
+# Colors for line indicators
 green = (0, 200, 150)
 red = (200, 0, 0)
 col = (0, 0, 0)
-collision = False
+
+
 index_column = 0
-
-
-
-# *************************** Delete ***********************************************
-
-main_board = [[0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, -1, 0, 0],
-              [0, 0, 1, -1, -1, 0, 0],
-              [0, 0, -1, 1, 1, 0, 0],
-              [0, -1, 1, 1, 1, 1, 0]]
-
-
-# *************************** Delete ***********************************************
-
-left = 15
-top = 15
-circle_size = (80, 80)
-
-# Nested List for coins
-# [color, circle_size]
-circles = []
-
-for _ in range(6):
-    circles.append(7 * [0])
-
-# *************************** Delete ***********************************************
-# # Coin colors
-# white = (255, 255, 255)
-# yellow = (200, 200, 0)
-# red = (200, 0, 0)
-
-
-# # Chnage values of list circles based on the values in the nested list main_board
-# for ind_row, row in enumerate(main_board):
-#     for ind_col, value in enumerate(row):
-#         if value == 0:
-#             circles[ind_row][ind_col] = (white, (left, top, *circle_size))
-#         elif value == -1:
-#             circles[ind_row][ind_col] = (red, (left, top, *circle_size))
-#         elif value == 1:
-#             circles[ind_row][ind_col] = (yellow, (left, top, *circle_size))
-
-#         left += 90
-
-#     top += 90
-#     left = 15
 player_clicked = False
 
+# Game loop
 while True:
     #delta time |alternative: dt = clock.tick(60) / 1000
     dt = time.time() - prev_time
     prev_time = time.time()
 
     m_pos = pygame.mouse.get_pos()
-    pygame.display.set_caption(f"{m_pos}")
+    pygame.display.set_caption("Connect Four")
 
     #event loop
     for event in pygame.event.get():
@@ -120,27 +74,34 @@ while True:
 
 
 
+
+
     screen.fill((255, 255, 255))
 
 
 
     if player_clicked:
-        player_red.animation_fall(centersx[index_column])
+        cur_player.animation_fall(centersx[index_column])
         cur_low_border = board_1.get_low_border(index_column)
 
-        if player_red.get_coin_bottom() >= cur_low_border:
-            player_red.set_coin_bottom(cur_low_border)
+        if cur_player.get_coin_bottom() >= cur_low_border:
+            cur_player.set_coin_bottom(cur_low_border)
 
-            cur_low_border -= player_red.get_coin_height()
+            cur_low_border -= cur_player.get_coin_height()
             board_1.set_low_border(index_column, cur_low_border)
-            board_1.set_value(index_column, player_red.value)
+            board_1.set_value(index_column, cur_player.value)
 
-            player_red.reset_pos()
+            cur_player.reset_pos()
 
+            if cur_player == player_yel:
+                cur_player = player_red
+            elif cur_player == player_red:
+                cur_player = player_yel
+            
             player_clicked = False
 
     else:
-        player_red.set_centerx_to(m_pos[0])
+        cur_player.set_centerx_to(m_pos[0])
         for key, field in select_bar.items():
             if field.collidepoint(m_pos) and not board_1.col_full(key):
                  pygame.draw.line(screen, green, *points_pos[key], 10)
@@ -150,10 +111,12 @@ while True:
 
            
     # Draw coins and board
-    player_red.draw(screen)
+    cur_player.draw(screen)
     board_1.draw_coins(screen)
     board_1.draw(screen)
     
+    
+
 
     # Update screen
     pygame.display.flip()
