@@ -25,6 +25,19 @@ board_1.config(player_red.get_image(), player_yel.get_image())
 # Choose the starting player randomly
 cur_player = random.choice([player_red, player_yel])
 
+# Text Game Over
+game_font = pygame.font.Font(None, 100)
+game_over_surface = game_font.render("Game Over", True, (0, 0, 0))
+game_over_rect = game_over_surface.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
+
+# Text Player Won
+red_surf = game_font.render("Red Wins!!", True, (0, 0, 0))
+red_rect = red_surf.get_rect(bottom=game_over_rect.top, centerx=game_over_rect.centerx)
+
+yel_surf = game_font.render("Yellow Wins!!", True, (0, 0, 0))
+yel_rect = yel_surf.get_rect(bottom=game_over_rect.top, centerx=game_over_rect.centerx)
+
+
 # Selection bar
 select_bar = dict()
 select_left = 0
@@ -32,15 +45,19 @@ for index in range(7):
     select_bar[index] = pygame.rect.Rect(0, 0, 40, SCREEN_HEIGHT)
     select_bar[index].centerx = centersx[index]
 
+
 # Colors for line indicators
 green = (0, 200, 150)
 red = (200, 0, 0)
 col = (0, 0, 0)
 
-
+# Variables for game state
 index_column = 0
 player_clicked = False
+cannot_click = False
 game_over = False
+red_won = False
+yel_won = False
 
 # Game loop
 while True:
@@ -59,7 +76,7 @@ while True:
                 pygame.quit()
                 sys.exit()
 
-        elif not game_over and event.type == pygame.MOUSEBUTTONDOWN:
+        elif not game_over and not cannot_click and event.type == pygame.MOUSEBUTTONDOWN:
             for index, field in select_bar.items():
                 if field.collidepoint(m_pos) and not board_1.col_full(index):
 
@@ -72,6 +89,7 @@ while True:
 
     # Game logic
     if player_clicked:
+        cannot_click = True
         cur_player.animation_fall(centersx[index_column])
         cur_low_border = board_1.get_low_border(index_column)
 
@@ -85,10 +103,10 @@ while True:
             ply_value = board_1.check_winner()
 
             if ply_value == 4:
-
+                red_won = True
                 game_over = True
             elif ply_value == -4:
-
+                yel_won = True
                 game_over = True
 
             cur_player.reset_pos()
@@ -99,6 +117,7 @@ while True:
                 cur_player = player_yel
             
             player_clicked = False
+            cannot_click = False
 
     elif not game_over:
         cur_player.set_centerx_to(m_pos[0])
@@ -117,6 +136,15 @@ while True:
     board_1.draw_coins(screen)
     board_1.draw(screen)
     
+
+    if game_over:
+        screen.blit(game_over_surface, game_over_rect)
+        
+        if red_won:
+            screen.blit(red_surf, red_rect)
+        elif yel_won:
+            screen.blit(yel_surf, yel_rect)
+
     # Update screen
     pygame.display.flip()
 
