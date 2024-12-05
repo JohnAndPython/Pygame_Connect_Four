@@ -39,6 +39,7 @@ class Board(pygame.sprite.Sprite):
         self._ply_image_1: pygame.surface.Surface = None
         self._ply_image_2: pygame.surface.Surface = None
 
+
     def config(self, ply_image_1: pygame.surface.Surface, ply_image_2: pygame.surface.Surface) -> None:
         self._ply_image_1 = ply_image_1
         self._ply_image_2 = ply_image_2
@@ -94,6 +95,75 @@ class Board(pygame.sprite.Sprite):
                 self._board[ind-1][index] = value
                 break
 
+
+    def check_winner(self) -> int:
+
+        # Check horizontal
+        for row in range(len(self._board)):
+            for col in range(len(self._board[0])- 3):
+                sum_horizontal = sum(self._board[row][col:col + 4])
+
+                if sum_horizontal == 4:
+                    return 4
+                
+                if sum_horizontal == -4:
+                    return -4
+                
+
+        # Check Vertical
+        lst_vertical = []   
+        for col in range(0, len(self._board)):
+            for row in range(0, len(self._board)-3):
+                lst_vertical.append(self._board[row][col])
+                lst_vertical.append(self._board[row + 1][col])
+                lst_vertical.append(self._board[row + 2][col])
+                lst_vertical.append(self._board[row + 3][col])
+                sum_vertical = sum(lst_vertical)
+
+                if sum_vertical == 4:
+                    return 4
+                if sum_vertical == -4:
+                    return -4
+                
+                lst_vertical.clear()
+
+
+        # Check diagonal left to right
+        lst_diagonalLR = []
+        for col in range(0, len(self._board[0]) - 3):
+            for row in range(0, len(self._board) - 3):
+                lst_diagonalLR.append(self._board[row][col])
+                lst_diagonalLR.append(self._board[row + 1][col + 1])
+                lst_diagonalLR.append(self._board[row + 2][col + 2])
+                lst_diagonalLR.append(self._board[row + 3][col + 3])
+                sum_diagonal_lr = sum(lst_diagonalLR)
+
+                if sum_diagonal_lr == 4:
+                    return 4
+                elif sum_diagonal_lr == -4:
+                    return -4
+                
+                lst_diagonalLR.clear()
+
+        
+        # Check diagonal right to left
+        lst_diagonalRL = []
+        for col in range(len(self._board[0])-1, len(self._board[0])- 5, -1):
+            for row in range(0, len(self._board) - 3):
+                lst_diagonalRL.append(self._board[row][col])
+                lst_diagonalRL.append(self._board[row + 1][col - 1])
+                lst_diagonalRL.append(self._board[row + 2][col - 2])
+                lst_diagonalRL.append(self._board[row + 3][col - 3])
+                sum_diagonal_rl = sum(lst_diagonalRL)
+
+                if sum_diagonal_rl == 4:
+                    return 4
+                elif sum_diagonal_rl == -4:
+                    return -4
+                
+                lst_diagonalRL.clear()
+
+        return 0
 
     def draw(self, surface: pygame.surface.Surface) -> None:
         ''' Draw the rectangles of the nested list self.board_rects on surface'''
