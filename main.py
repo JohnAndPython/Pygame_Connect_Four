@@ -136,7 +136,7 @@ while True:
     board_1.draw_coins(screen)
     board_1.draw(screen)
     
-
+    # Draw Game Over and who won
     if game_over:
         screen.blit(game_over_surface, game_over_rect)
         
