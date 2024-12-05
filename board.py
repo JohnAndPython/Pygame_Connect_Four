@@ -92,16 +92,20 @@ class Board(pygame.sprite.Sprite):
                 self._board[ind][index] = value
             elif row[index] != 0:
                 self._board[ind-1][index] = value
+                break
 
 
     def draw(self, surface: pygame.surface.Surface) -> None:
         ''' Draw the rectangles of the nested list self.board_rects on surface'''
+
         for row in self._board_rects:
             for rect in row:
                 surface.blit(self._image, rect)
 
 
     def draw_coins(self, surface: pygame.surface.Surface) -> None:
+        ''' Draw all played coins'''
+
         for ind_row, row in enumerate(self._board):
             for ind_col, value in enumerate(row):
                 if value == 1:
