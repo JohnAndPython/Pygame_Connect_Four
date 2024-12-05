@@ -1,5 +1,5 @@
 import pygame
-import time, sys, random
+import sys, random
 
 from board import Board
 from player import Player
@@ -11,8 +11,6 @@ SCREEN_HEIGHT = 720
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
-
-prev_time = time.time()
 
 # Init Board and player
 board_1 = Board(lowest_border=SCREEN_HEIGHT)
@@ -42,17 +40,15 @@ col = (0, 0, 0)
 
 index_column = 0
 player_clicked = False
+game_over = False
 
 # Game loop
 while True:
-    #delta time |alternative: dt = clock.tick(60) / 1000
-    dt = time.time() - prev_time
-    prev_time = time.time()
 
     m_pos = pygame.mouse.get_pos()
     pygame.display.set_caption("Connect Four")
 
-    #event loop
+    # Event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -63,23 +59,18 @@ while True:
                 pygame.quit()
                 sys.exit()
 
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif not game_over and event.type == pygame.MOUSEBUTTONDOWN:
             for index, field in select_bar.items():
-                
                 if field.collidepoint(m_pos) and not board_1.col_full(index):
 
                     player_clicked = True
                     index_column = index
 
 
-
-
-
-
     screen.fill((255, 255, 255))
 
 
-
+    # Game logic
     if player_clicked:
         cur_player.animation_fall(centersx[index_column])
         cur_low_border = board_1.get_low_border(index_column)
@@ -91,6 +82,15 @@ while True:
             board_1.set_low_border(index_column, cur_low_border)
             board_1.set_value(index_column, cur_player.value)
 
+            ply_value = board_1.check_winner()
+
+            if ply_value == 4:
+
+                game_over = True
+            elif ply_value == -4:
+
+                game_over = True
+
             cur_player.reset_pos()
 
             if cur_player == player_yel:
@@ -100,7 +100,7 @@ while True:
             
             player_clicked = False
 
-    else:
+    elif not game_over:
         cur_player.set_centerx_to(m_pos[0])
         for key, field in select_bar.items():
             if field.collidepoint(m_pos) and not board_1.col_full(key):
@@ -111,13 +111,12 @@ while True:
 
            
     # Draw coins and board
-    cur_player.draw(screen)
+    if not game_over:
+        cur_player.draw(screen)
+
     board_1.draw_coins(screen)
     board_1.draw(screen)
     
-    
-
-
     # Update screen
     pygame.display.flip()
 
