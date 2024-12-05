@@ -1,6 +1,5 @@
 import pygame
-import time
-import sys
+import time, sys, random
 
 from board import Board
 from player import Player
@@ -19,12 +18,12 @@ board_1 = Board(lowest_border=SCREEN_HEIGHT)
 centersx = board_1.get_centersx()
 points_pos = board_1.get_points_pos()
 
-print(board_1._board)
-print(board_1._low_border)
-
-
 player_yel = Player("yellow", 50)
 player_red = Player("red", 60)
+
+board_1.config(player_red.get_image(), player_yel.get_image())
+
+print(player_red._rect)
 
 
 
@@ -134,10 +133,10 @@ while True:
 
             cur_low_border -= player_red.get_coin_height()
             board_1.set_low_border(index_column, cur_low_border)
-
             board_1.set_value(index_column, player_red.value)
-            print(player_red.value)
-            print(board_1._board)
+
+            player_red.reset_pos()
+
             player_clicked = False
 
     else:
@@ -150,16 +149,13 @@ while True:
                 pygame.draw.line(screen, red, *points_pos[key], 10)
 
            
-
-    #print(collision, index_bar)
-    
+    # Draw coins and board
     player_red.draw(screen)
+    board_1.draw_coins(screen)
     board_1.draw(screen)
+    
 
-
-
-
-
+    # Update screen
     pygame.display.flip()
 
     #set max FPS to 60
