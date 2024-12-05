@@ -15,17 +15,12 @@ clock = pygame.time.Clock()
 
 prev_time = time.time()
 
-board_1 = Board()
+board_1 = Board(lowest_border=SCREEN_HEIGHT)
 centersx = board_1.get_centersx()
 points_pos = board_1.get_points_pos()
-board_1.board[0][0] = 1
-board_1.board[0][1] = 1
-board_1.board[0][2] = 1
-board_1.board[0][3] = 1
-board_1.board[0][4] = 0
-board_1.board[0][5] = 1
-board_1.board[0][6] = 1
-print(board_1.board)
+
+print(board_1._board)
+print(board_1._low_border)
 
 
 player_yel = Player("yellow", 50)
@@ -46,7 +41,7 @@ green = (0, 200, 150)
 red = (200, 0, 0)
 col = (0, 0, 0)
 collision = False
-index_bar = 0
+index_column = 0
 
 
 
@@ -117,15 +112,11 @@ while True:
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             for index, field in select_bar.items():
+                
                 if field.collidepoint(m_pos) and not board_1.col_full(index):
-                    player_clicked = True
-                    index_bar = index
 
-            
-        elif event.type == pygame.MOUSEBUTTONUP:
-            player_clicked = False
-            # a = board_1.check_column(index_bar)
-            # print(a)
+                    player_clicked = True
+                    index_column = index
 
 
 
@@ -134,10 +125,21 @@ while True:
 
 
 
-
-
     if player_clicked:
-        player_red.animation_fall(centersx[index_bar])
+        player_red.animation_fall(centersx[index_column])
+        cur_low_border = board_1.get_low_border(index_column)
+
+        if player_red.get_coin_bottom() >= cur_low_border:
+            player_red.set_coin_bottom(cur_low_border)
+
+            cur_low_border -= player_red.get_coin_height()
+            board_1.set_low_border(index_column, cur_low_border)
+
+            board_1.set_value(index_column, player_red.value)
+            print(player_red.value)
+            print(board_1._board)
+            player_clicked = False
+
     else:
         player_red.set_centerx_to(m_pos[0])
         for key, field in select_bar.items():
