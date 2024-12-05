@@ -2,15 +2,15 @@ import pygame
 
 
 class Board(pygame.sprite.Sprite):
-    def __init__(self, board_size_y: int=7, board_size_x: int=6) -> None:
+    def __init__(self, board_size_y: int=6, board_size_x: int=7, lowest_border: int=0) -> None:
         super().__init__()
 
         self._board: list = []
         self._board_size_y: int = board_size_y
         self._board_size_x: int= board_size_x
 
-        for _ in range(self._board_size_x):
-            self._board.append(self._board_size_y * [0])
+        for _ in range(self._board_size_y):
+            self._board.append(self._board_size_x * [0])
 
         self._board_rects: list = []
 
@@ -22,8 +22,8 @@ class Board(pygame.sprite.Sprite):
         top_pos: int = 120
         temp_lst: list = []
 
-        for _ in range(self._board_size_x):
-            for _ in range(self._board_size_y):
+        for _ in range(self._board_size_y):
+            for _ in range(self._board_size_x):
                 temp_lst.append(self._image.get_rect(left=left_pos, top=top_pos))
                 left_pos += 100
 
@@ -33,7 +33,8 @@ class Board(pygame.sprite.Sprite):
             top_pos += 100
 
 
-    
+        self._low_border: list = [lowest_border] * board_size_x
+
 
 
     def get_centersx(self) -> list[int]:
@@ -62,17 +63,28 @@ class Board(pygame.sprite.Sprite):
     def col_full(self, index) -> bool:
         ''' Check if a column is full or not. Full = Column is completly filled with values other than zeros'''
 
-        for value in self._board:
-            if value[index] != 0:
-                return True
-            else:
-                return False
-            
-        return False
+        if self._board[0][index] != 0:
+            return True
+        else:
+            return False
 
 
-    def free_space(self, index) -> int:
-        pass
+    def set_low_border(self, index: int, value: int) -> None:
+        self._low_border[index] = value
+
+
+    def get_low_border(self, index: int) -> int:
+        return self._low_border[index]
+    
+
+    def set_value(self, index, value) -> None:
+
+        for ind, row in enumerate(self._board):
+            if row[index] == 0 and ind == self._board_size_y - 1:
+                self._board[ind][index] = value
+            elif row[index] != 0:
+                self._board[ind-1][index] = value
+
 
 
     def draw(self, surface: pygame.surface.Surface) -> None:
