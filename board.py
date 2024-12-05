@@ -8,6 +8,7 @@ class Board(pygame.sprite.Sprite):
         self._board: list = []
         self._board_size_y: int = board_size_y
         self._board_size_x: int= board_size_x
+        self._lowest_border: int = lowest_border
 
         for _ in range(self._board_size_y):
             self._board.append(self._board_size_x * [0])
@@ -33,7 +34,7 @@ class Board(pygame.sprite.Sprite):
             top_pos += 100
 
 
-        self._low_border: list = [lowest_border] * board_size_x
+        self._low_border: list = [self._lowest_border] * self._board_size_x
 
         # Player variables
         self._ply_image_1: pygame.surface.Surface = None
@@ -163,6 +164,17 @@ class Board(pygame.sprite.Sprite):
                 lst_diagonalRL.clear()
 
         return 0
+
+
+    def reset(self) -> None:
+        ''' reset all values '''
+
+        self._board: list = []
+
+        for _ in range(self._board_size_y):
+            self._board.append(self._board_size_x * [0])
+
+        self._low_border: list = [self._lowest_border] * self._board_size_x
 
 
     def draw(self, surface: pygame.surface.Surface) -> None:
