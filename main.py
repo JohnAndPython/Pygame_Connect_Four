@@ -72,7 +72,6 @@ while True:
 
     m_pos = pygame.mouse.get_pos()
     pygame.display.set_caption("Connect Four")
-    pygame.display.set_caption(f"{clock.get_fps():.2f}")
 
     # Event loop
     for event in pygame.event.get():
