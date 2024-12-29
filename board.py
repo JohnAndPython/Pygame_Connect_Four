@@ -129,39 +129,31 @@ class Board(pygame.sprite.Sprite):
 
 
         # Check diagonal left to right
-        lst_diagonalLR = []
-        for col in range(0, len(self._board[0]) - 3):
-            for row in range(0, len(self._board) - 3):
-                lst_diagonalLR.append(self._board[row][col])
-                lst_diagonalLR.append(self._board[row + 1][col + 1])
-                lst_diagonalLR.append(self._board[row + 2][col + 2])
-                lst_diagonalLR.append(self._board[row + 3][col + 3])
-                sum_diagonal_lr = sum(lst_diagonalLR)
-
-                if sum_diagonal_lr == 4:
-                    return 4
-                elif sum_diagonal_lr == -4:
-                    return -4
-                
-                lst_diagonalLR.clear()
-
-        
-        # Check diagonal right to left
-        lst_diagonalRL = []
-        for col in range(len(self._board[0])-1, len(self._board[0])- 5, -1):
-            for row in range(0, len(self._board) - 3):
-                lst_diagonalRL.append(self._board[row][col])
-                lst_diagonalRL.append(self._board[row + 1][col - 1])
-                lst_diagonalRL.append(self._board[row + 2][col - 2])
-                lst_diagonalRL.append(self._board[row + 3][col - 3])
-                sum_diagonal_rl = sum(lst_diagonalRL)
+        for row in range(0, len(self._board) - 3):
+            for col in range(0, len(self._board[0]) - 3):
+                sum_diagonal_rl = sum((self._board[row][col], 
+                                       self._board[row + 1][col + 1], 
+                                       self._board[row + 2][col + 2], 
+                                       self._board[row + 3][col + 3]))
 
                 if sum_diagonal_rl == 4:
                     return 4
                 elif sum_diagonal_rl == -4:
                     return -4
-                
-                lst_diagonalRL.clear()
+
+        
+        # Check diagonal right to left
+        for row in range(0, len(self._board) - 3):
+            for col in range(3, len(self._board[0])):
+                sum_diagonal_rl = sum((self._board[row][col], 
+                                       self._board[row + 1][col - 1], 
+                                       self._board[row + 2][col - 2], 
+                                       self._board[row + 3][col - 3]))
+
+                if sum_diagonal_rl == 4:
+                    return 4
+                elif sum_diagonal_rl == -4:
+                    return -4
 
         return 0
 
