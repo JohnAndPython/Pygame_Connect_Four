@@ -111,34 +111,30 @@ class Board(pygame.sprite.Sprite):
                 
 
         # Check Vertical
-        lst_vertical = []   
-        for col in range(0, len(self._board)):
-            for row in range(0, len(self._board)-3):
-                lst_vertical.append(self._board[row][col])
-                lst_vertical.append(self._board[row + 1][col])
-                lst_vertical.append(self._board[row + 2][col])
-                lst_vertical.append(self._board[row + 3][col])
-                sum_vertical = sum(lst_vertical)
+        for row in range(0, len(self._board) - 3):
+            for col in range(0, len(self._board[0])):
+                sum_vertical = sum((self._board[row][col], 
+                                    self._board[row + 1][col], 
+                                    self._board[row + 2][col], 
+                                    self._board[row + 3][col]))
 
                 if sum_vertical == 4:
                     return 4
-                if sum_vertical == -4:
+                elif sum_vertical == -4:
                     return -4
-                
-                lst_vertical.clear()
 
 
         # Check diagonal left to right
         for row in range(0, len(self._board) - 3):
             for col in range(0, len(self._board[0]) - 3):
-                sum_diagonal_rl = sum((self._board[row][col], 
+                sum_diagonal_lr = sum((self._board[row][col], 
                                        self._board[row + 1][col + 1], 
                                        self._board[row + 2][col + 2], 
                                        self._board[row + 3][col + 3]))
 
-                if sum_diagonal_rl == 4:
+                if sum_diagonal_lr == 4:
                     return 4
-                elif sum_diagonal_rl == -4:
+                elif sum_diagonal_lr == -4:
                     return -4
 
         
