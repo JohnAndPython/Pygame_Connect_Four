@@ -27,18 +27,18 @@ cur_player = random.choice([player_red, player_yel])
 
 # Text Game Over
 game_font = pygame.font.Font(None, 80)
-game_over_surface = game_font.render("Game Over", True, (0, 0, 0))
+game_over_surface = game_font.render("Game Over", True, (255, 255, 0))
 game_over_rect = game_over_surface.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
 
 # Text Player Won
-red_surf = game_font.render("Red Wins!!", True, (0, 0, 0))
+red_surf = game_font.render("Red Wins!!", True, (255, 255, 0))
 red_rect = red_surf.get_rect(bottom=game_over_rect.top, centerx=game_over_rect.centerx)
 
-yel_surf = game_font.render("Yellow Wins!!", True, (0, 0, 0))
+yel_surf = game_font.render("Yellow Wins!!", True, (255, 255, 0))
 yel_rect = yel_surf.get_rect(bottom=game_over_rect.top, centerx=game_over_rect.centerx)
 
 # Text restart
-restart_surf = game_font.render("Right Click to Restart", True, (0, 0, 0))
+restart_surf = game_font.render("Right Click to Restart", True, (255, 255, 0))
 restart_rect = restart_surf.get_rect(top=game_over_rect.bottom, centerx=game_over_rect.centerx)
 
 # Rect Game Over
@@ -154,7 +154,6 @@ while True:
     
     # Draw Game Over and who won
     if game_over:
-        pygame.draw.rect(screen, (255, 255, 255), bg_rect, border_radius=15)
         screen.blit(game_over_surface, game_over_rect)
         
         if red_won:
